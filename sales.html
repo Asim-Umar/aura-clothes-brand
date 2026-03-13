@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALE | AURA ARCHIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F5F5F0;
+            color: #1a1a1a;
+            cursor: none;
+        }
+        h1, h2, h3, .brand-font { font-family: 'Syne', sans-serif; }
+
+        /* AURA Custom Cursor */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #1a1a1a;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            background-color: white;
+            transition: width 0.3s, height 0.3s;
+        }
+        #cursor.hovered { width: 60px; height: 60px; }
+
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Sale Badge Pulse */
+        .sale-pulse {
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0px rgba(26, 26, 26, 0.2); }
+            100% { box-shadow: 0 0 0 20px rgba(26, 26, 26, 0); }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="cursor"></div>
+    <div class="grain"></div>
+
+    <nav class="p-8 flex justify-between items-center relative z-50">
+        <a href="aura.html" class="text-2xl font-bold brand-font hover-trigger uppercase tracking-tighter">Aura.</a>
+        <div class="flex gap-8 text-[10px] font-black tracking-[0.3em] uppercase">
+            <a href="new_arrivals.html" class="hover-trigger opacity-50 hover:opacity-100 transition">Arrivals</a>
+            <a href="#" class="border-b-2 border-black pb-1">Archive Sale</a>
+            <a href="best_seller.html" class="hover-trigger opacity-50 hover:opacity-100 transition">Best Sellers</a>
+        </div>
+    </nav>
+
+    <section class="py-20 px-8">
+        <div class="max-w-7xl mx-auto bg-black text-[#F5F5F0] rounded-[3rem] p-12 md:p-24 relative overflow-hidden">
+            <div class="relative z-10">
+                <span class="inline-block border border-white/30 px-4 py-1 rounded-full text-[10px] tracking-widest mb-6 uppercase">Seasonal Clearance</span>
+                <h1 class="text-6xl md:text-9xl font-extrabold tracking-tighter mb-8 leading-none">UP TO<br>60% OFF.</h1>
+                <p class="text-gray-400 max-w-sm mb-12 text-lg">Limited archival pieces from previous seasons. Once they're gone, they're gone forever.</p>
+                <button class="bg-[#F5F5F0] text-black px-10 py-4 rounded-full font-bold text-sm tracking-widest hover:scale-105 transition-transform hover-trigger">SHOP THE ARCHIVE</button>
+            </div>
+            
+            <div class="absolute -right-20 -bottom-20 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl"></div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-8 pb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div class="group cursor-pointer hover-trigger">
+                <div class="relative aspect-[4/5] bg-gray-200 overflow-hidden mb-4 rounded-2xl">
+                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 right-4 bg-white text-black text-[10px] font-black px-3 py-1 rounded-full">-40%</div>
+                </div>
+                <h3 class="font-bold text-sm uppercase tracking-wider mb-1">Essential Puffer</h3>
+                <div class="flex gap-3 items-center">
+                    <span class="text-gray-400 line-through text-sm">$280</span>
+                    <span class="text-black font-black">$168</span>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer hover-trigger">
+                <div class="relative aspect-[4/5] bg-gray-200 overflow-hidden mb-4 rounded-2xl">
+                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1000" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 right-4 bg-white text-black text-[10px] font-black px-3 py-1 rounded-full">-60%</div>
+                </div>
+                <h3 class="font-bold text-sm uppercase tracking-wider mb-1">Leather Moto Jacket</h3>
+                <div class="flex gap-3 items-center">
+                    <span class="text-gray-400 line-through text-sm">$450</span>
+                    <span class="text-black font-black">$180</span>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer hover-trigger">
+                <div class="relative aspect-[4/5] bg-gray-200 overflow-hidden mb-4 rounded-2xl">
+                    <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=1000" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 right-4 bg-white text-black text-[10px] font-black px-3 py-1 rounded-full">-30%</div>
+                </div>
+                <h3 class="font-bold text-sm uppercase tracking-wider mb-1">Canvas High-Tops</h3>
+                <div class="flex gap-3 items-center">
+                    <span class="text-gray-400 line-through text-sm">$120</span>
+                    <span class="text-black font-black">$84</span>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer hover-trigger">
+                <div class="relative aspect-[4/5] bg-gray-200 overflow-hidden mb-4 rounded-2xl">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 right-4 bg-white text-black text-[10px] font-black px-3 py-1 rounded-full">-50%</div>
+                </div>
+                <h3 class="font-bold text-sm uppercase tracking-wider mb-1">Graphic Studio Tee</h3>
+                <div class="flex gap-3 items-center">
+                    <span class="text-gray-400 line-through text-sm">$85</span>
+                    <span class="text-black font-black">$42.50</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: "power2.out"
+            });
+        });
+
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Grid Animation
+        gsap.from(".group", {
+            scale: 0.9,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "expo.out",
+            delay: 0.2
+        });
+    </script>
+</body>
+</html>

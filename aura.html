@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Modern Streetwear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --cursor-size: 20px;
+            --cursor-hover-size: 60px;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F5F5F0;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 1px solid #1a1a1a;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+            background-color: white;
+        }
+
+        #cursor.hovered {
+            width: var(--cursor-hover-size);
+            height: var(--cursor-hover-size);
+            background-color: white;
+            border-color: transparent;
+            mix-blend-mode: difference;
+        }
+
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Marquee Animation */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Image Hover Effects */
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+        .product-img {
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #1a1a1a;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #F5F5F0;
+        }
+        
+        .nav-link::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 1px;
+            background: #1a1a1a;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Drawer */
+        .cart-drawer {
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <!-- Grain Overlay -->
+    <div class="grain"></div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="text-4xl font-bold tracking-widest animate-pulse">AURA</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
+        <a href="#" class="text-2xl font-bold brand-font tracking-tighter hover-trigger">AURA.</a>
+        
+        <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide">
+            <a href="#collection" class="nav-link hover-trigger">COLLECTION</a>
+            <a href="about.html" class="nav-link hover-trigger">ABOUT</a>
+            <a href="contact.html" class="nav-link hover-trigger">contact us</a>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <button class="hover-trigger"><i data-lucide="search" class="w-5 h-5"></i></button>
+            <button id="cart-btn" class="relative hover-trigger">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-black text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold opacity-0 transition-opacity">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Cart Drawer -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full md:w-[450px] bg-[#F5F5F0] z-[70] shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-xl font-bold brand-font">YOUR BAG</h2>
+            <button id="close-cart" class="hover-trigger"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Cart items injected here -->
+            <div class="flex flex-col items-center justify-center h-full text-gray-400">
+                <i data-lucide="shopping-bag" class="w-12 h-12 mb-4 opacity-20"></i>
+                <p>Your bag is empty.</p>
+            </div>
+        </div>
+        <div class="p-6 border-t border-gray-200 bg-white">
+            <div class="flex justify-between mb-4 text-lg font-bold">
+                <span>TOTAL</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="w-full bg-black text-white py-4 font-bold tracking-widest hover:bg-gray-800 transition-colors hover-trigger">CHECKOUT</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=2532&auto=format&fit=crop" 
+                 alt="Fashion Model" 
+                 class="w-full h-full object-cover opacity-90 scale-110" 
+                 id="hero-img">
+            <div class="absolute inset-0 bg-black/10"></div>
+        </div>
+
+        <div class="relative z-10 text-center text-white mix-blend-difference">
+            <p class="text-sm md:text-base tracking-[0.3em] mb-4 opacity-0 translate-y-10" id="hero-subtitle">SPRING / SUMMER 2026</p>
+            <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-8 opacity-0 translate-y-10" id="hero-title">
+                ETHEREAL<br>ESSENCE
+            </h1>
+            <a href="#collection" class="inline-block border border-white px-8 py-3 text-sm tracking-widest hover:bg-white hover:text-black transition-all duration-300 opacity-0 translate-y-10 hover-trigger" id="hero-cta">
+                EXPLORE COLLECTION
+            </a>
+        </div>
+
+        <div class="absolute bottom-10 left-0 w-full overflow-hidden z-10 text-white/50">
+            <div class="marquee-container">
+                <div class="marquee-content text-sm tracking-widest">
+                    FREE SHIPPING WORLDWIDE • MINIMALIST DESIGN • SUSTAINABLE FABRICS • TIMELESS STYLE • FREE SHIPPING WORLDWIDE • MINIMALIST DESIGN • SUSTAINABLE FABRICS • TIMELESS STYLE •
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Categories -->
+    <section class="py-24 px-6 md:px-12 bg-[#F5F5F0]">
+        <div class="flex flex-col md:flex-row gap-4 h-[80vh]">
+            <div class="flex-1 relative group overflow-hidden cursor-pointer hover-trigger" onclick="filterCategory('Women')">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Women">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
+                <div class="absolute bottom-8 left-8 text-white">
+                    <h3 class="text-4xl font-bold mb-2">WOMEN</h3>
+                    <p class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">View Collection →</p>
+                </div>
+            </div>
+            <div class="flex-1 relative group overflow-hidden cursor-pointer hover-trigger" onclick="filterCategory('Men')">
+                <img src="https://images.unsplash.com/photo-1488161628813-99c974383b4c?q=80&w=1964&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Men">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
+                <div class="absolute bottom-8 left-8 text-white">
+                    <h3 class="text-4xl font-bold mb-2">MEN</h3>
+                    <p class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">View Collection →</p>
+                </div>
+            </div>
+            <div class="flex-1 relative group overflow-hidden cursor-pointer hover-trigger" onclick="filterCategory('Accessories')">
+                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=2080&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Accessories">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
+                <div class="absolute bottom-8 left-8 text-white">
+                    <h3 class="text-4xl font-bold mb-2">ACCESSORIES</h3>
+                    <p class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">View Collection →</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section id="collection" class="py-24 px-6 md:px-12 min-h-screen">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+            <div>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-4">NEW ARRIVALS</h2>
+                <p class="text-gray-500 max-w-md">Curated pieces for the modern wardrobe. Designed for movement, crafted for longevity.</p>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex gap-4 mt-8 md:mt-0 overflow-x-auto pb-2 md:pb-0">
+                <button class="filter-btn active px-6 py-2 border border-black bg-black text-white rounded-full text-sm hover-trigger" data-filter="all">ALL</button>
+                <button class="filter-btn px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-black hover:text-white transition-colors hover-trigger" data-filter="Women">WOMEN</button>
+                <button class="filter-btn px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-black hover:text-white transition-colors hover-trigger" data-filter="Men">MEN</button>
+                <button class="filter-btn px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-black hover:text-white transition-colors hover-trigger" data-filter="Accessories">ACC</button>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <!-- Products injected via JS -->
+        </div>
+    </section>
+
+    <!-- Lookbook / Parallax Section -->
+    <section class="relative py-32 bg-[#E8E8E3] overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="w-full md:w-1/2">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop" class="w-full h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700" alt="Lookbook">
+                        <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-white p-4 shadow-xl hidden md:block">
+                            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 space-y-8">
+                    <h2 class="text-6xl font-bold tracking-tighter">THE<br>STUDIO</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        Our design philosophy is rooted in the balance between form and function. We believe clothing should adapt to the wearer, not the other way around. Every stitch tells a story of precision and care.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-300">
+                        <div>
+                            <h4 class="font-bold text-xl mb-2">Sustainable</h4>
+                            <p class="text-sm text-gray-500">100% organic cotton and recycled materials.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-2">Ethical</h4>
+                            <p class="text-sm text-gray-500">Fair trade certified manufacturing.</p>
+                        </div>
+                    </div>
+                    <button class="text-sm font-bold border-b border-black pb-1 hover-trigger">READ OUR MANIFESTO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-32 px-6 bg-black text-[#F5F5F0] text-center">
+        <h2 class="text-4xl md:text-6xl font-bold mb-8 tracking-tighter">JOIN THE CULTURE</h2>
+        <p class="mb-12 text-gray-400">Subscribe for early access to drops and exclusive offers.</p>
+        <form class="max-w-md mx-auto flex border-b border-gray-600 pb-2" onsubmit="event.preventDefault(); alert('Welcome to the inner circle.');">
+            <input type="email" placeholder="ENTER YOUR EMAIL" class="w-full bg-transparent outline-none text-lg placeholder-gray-600">
+            <button type="submit" class="font-bold hover:text-white text-gray-400 transition-colors hover-trigger">SUBSCRIBE</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#F5F5F0] pt-24 pb-12 px-6 border-t border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
+            <div class="space-y-6">
+                <h3 class="text-2xl font-bold brand-font">AURA.</h3>
+                <p class="text-gray-500 text-sm">Redefining modern streetwear through minimalism and sustainable practices.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">SHOP</h4>
+                <ul class="space-y-4 text-sm text-gray-600">
+                    <li><a href="new_arrivals.html" class="hover:text-black hover-trigger">New Arrivals</a></li>
+                    <li><a href="best_seller.html" class="hover:text-black hover-trigger">Best Sellers</a></li>
+                    <li><a href="accesseries.html" class="hover:text-black hover-trigger">Accessories</a></li>
+                    <li><a href="sales.html" class="hover:text-black hover-trigger">Sale</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">HELP</h4>
+                <ul class="space-y-4 text-sm text-gray-600">
+                    <li><a href="#" class="hover:text-black hover-trigger">Shipping & Returns</a></li>
+                    <li><a href="#" class="hover:text-black hover-trigger">Size Guide</a></li>
+                    <li><a href="#" class="hover:text-black hover-trigger">FAQ</a></li>
+                    <li><a href="contact.html" class="hover:text-black hover-trigger">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">SOCIAL</h4>
+                <div class="flex gap-4">
+                    <a href="https://instagram.com" class="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-colors hover-trigger"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                    <a href="#" class="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-colors hover-trigger"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                    <a href="https://facebook.com" class="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-colors hover-trigger"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 border-t border-gray-200 pt-8">
+            <p>&copy; 2026 AURA Clothing. All rights reserved.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-black">Privacy Policy</a>
+                <a href="#" class="hover:text-black">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data
+        const products = [
+            {
+                id: 1,
+                name: "Oversized Wool Coat",
+                price: 289,
+                category: "Women",
+                image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Structured Blazer",
+                price: 195,
+                category: "Men",
+                image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Minimalist Tote",
+                price: 120,
+                category: "Accessories",
+                image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Silk Midi Dress",
+                price: 245,
+                category: "Women",
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 5,
+                name: "Relaxed Linen Shirt",
+                price: 95,
+                category: "Men",
+                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 6,
+                name: "Leather Crossbody",
+                price: 175,
+                category: "Accessories",
+                image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 7,
+                name: "Cashmere Turtleneck",
+                price: 210,
+                category: "Women",
+                image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 8,
+                name: "Wide Leg Trousers",
+                price: 140,
+                category: "Men",
+                image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=1000&auto=format&fit=crop"
+            }
+        ];
+
+        let cart = [];
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initLoader();
+            initCursor();
+            renderProducts('all');
+            initScrollAnimations();
+        });
+
+        // Loader
+        function initLoader() {
+            const tl = gsap.timeline();
+            tl.to("#loader", {
+                yPercent: -100,
+                duration: 1.5,
+                ease: "power4.inOut",
+                delay: 0.5
+            })
+            .from("#hero-title", { y: 100, opacity: 0, duration: 1, ease: "power3.out" }, "-=0.5")
+            .from("#hero-subtitle", { y: 20, opacity: 0, duration: 1 }, "-=0.8")
+            .from("#hero-cta", { y: 20, opacity: 0, duration: 1 }, "-=0.8");
+        }
+
+        // Custom Cursor
+        function initCursor() {
+            const cursor = document.getElementById('cursor');
+            const triggers = document.querySelectorAll('.hover-trigger, a, button');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                trigger.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            });
+        }
+
+        // Render Products
+        function renderProducts(filter) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+            filtered.forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card group cursor-pointer hover-trigger';
+                card.innerHTML = `
+                    <div class="relative overflow-hidden bg-gray-100 aspect-[3/4] mb-4">
+                        <img src="${product.image}" alt="${product.name}" class="product-img w-full h-full object-cover">
+                        <button onclick="addToCart(${product.id})" class="absolute bottom-4 right-4 bg-white text-black p-3 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-black hover:text-white z-10 hover-trigger">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-lg leading-tight mb-1 group-hover:underline decoration-1 underline-offset-4">${product.name}</h3>
+                            <p class="text-sm text-gray-500">${product.category}</p>
+                        </div>
+                        <span class="font-medium">$${product.price}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+                
+                // Stagger animation
+                gsap.from(card, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%"
+                    }
+                });
+            });
+            lucide.createIcons();
+            initCursor(); // Re-init for new elements
+        }
+
+        // Filter Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-black', 'text-white', 'border-black');
+                    b.classList.add('border-gray-300');
+                });
+                e.target.classList.remove('border-gray-300');
+                e.target.classList.add('bg-black', 'text-white', 'border-black');
+                renderProducts(e.target.dataset.filter);
+            });
+        });
+
+        function filterCategory(cat) {
+            // Scroll to collection
+            document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                if(b.dataset.filter === cat) b.click();
+            });
+        }
+
+        // Cart Logic
+        const cartBtn = document.getElementById('cart-btn');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const closeCart = document.getElementById('close-cart');
+        const cartOverlay = document.getElementById('cart-overlay');
+
+        function toggleCart() {
+            const isOpen = cartDrawer.classList.contains('open');
+            if (isOpen) {
+                cartDrawer.classList.remove('open');
+                cartOverlay.classList.remove('opacity-100');
+                setTimeout(() => cartOverlay.classList.add('hidden'), 300);
+            } else {
+                cartOverlay.classList.remove('hidden');
+                // small delay to allow display:block to apply before opacity transition
+                setTimeout(() => cartOverlay.classList.add('opacity-100'), 10);
+                cartDrawer.classList.add('open');
+            }
+        }
+
+        cartBtn.addEventListener('click', toggleCart);
+        closeCart.addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', toggleCart);
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            
+            updateCartUI();
+            
+            // Open cart automatically on add
+            if (!cartDrawer.classList.contains('open')) {
+                toggleCart();
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function updateQty(id, change) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) removeFromCart(id);
+                else updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            
+            // Update Count
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCount.innerText = totalQty;
+            cartCount.style.opacity = totalQty > 0 ? '1' : '0';
+
+            // Update List
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 mb-4 opacity-20"></i>
+                        <p>Your bag is empty.</p>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex gap-4 animate-[fadeIn_0.3s_ease-out]">
+                        <div class="w-20 h-24 bg-gray-100 flex-shrink-0">
+                            <img src="${item.image}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-between py-1">
+                            <div>
+                                <h4 class="font-bold text-sm">${item.name}</h4>
+                                <p class="text-xs text-gray-500">${item.category}</p>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center border border-gray-200 rounded-full px-2 py-1">
+                                    <button onclick="updateQty(${item.id}, -1)" class="text-xs px-1 hover:text-gray-500">-</button>
+                                    <span class="text-xs mx-2 font-medium">${item.qty}</span>
+                                    <button onclick="updateQty(${item.id}, 1)" class="text-xs px-1 hover:text-gray-500">+</button>
+                                </div>
+                                <span class="font-medium text-sm">$${item.price * item.qty}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Update Total
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            cartTotal.innerText = '$' + total.toFixed(2);
+            
+            lucide.createIcons();
+        }
+
+        // Scroll Animations
+        function initScrollAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Parallax Hero Image
+            gsap.to("#hero-img", {
+                yPercent: 20,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "header",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

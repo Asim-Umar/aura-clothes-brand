@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEW ARRIVALS | AURA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F5F5F0;
+            color: #1a1a1a;
+            cursor: none;
+        }
+        h1, h2, .brand-font { font-family: 'Syne', sans-serif; }
+
+        /* AURA Custom Cursor */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #1a1a1a;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            background-color: white;
+            transition: width 0.3s, height 0.3s;
+        }
+        #cursor.hovered { width: 60px; height: 60px; }
+
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* 3D Product Card */
+        .product-card {
+            transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            perspective: 1000px;
+        }
+        .product-card:hover {
+            transform: translateY(-12px) rotateX(2deg) rotateY(-2deg);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="cursor"></div>
+    <div class="grain"></div>
+
+    <nav class="p-8 flex justify-between items-center relative z-50">
+        <a href="aura.html" class="text-2xl font-bold brand-font hover-trigger">AURA.</a>
+        <div class="flex gap-8 text-xs font-bold tracking-widest uppercase">
+            <a href="#" class="border-b border-black pb-1">New Arrivals</a>
+            <!-- <a href="#" class="hover-trigger opacity-50 hover:opacity-100 transition">Sales</a>
+            <a href="#" class="hover-trigger opacity-50 hover:opacity-100 transition">Best Sellers</a> -->
+        </div>
+    </nav>
+
+    <header class="pt-20 pb-12 px-8">
+        <div class="max-w-7xl mx-auto border-b border-black/10 pb-8 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+                <p class="text-xs tracking-[0.4em] font-bold text-gray-400 mb-2">SPRING/SUMMER 26</p>
+                <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter italic uppercase">The Drop.</h1>
+            </div>
+            <div class="flex gap-4">
+                <button class="px-6 py-2 bg-black text-white rounded-full text-xs font-bold hover-trigger">FILTER</button>
+                <button class="px-6 py-2 border border-black rounded-full text-xs font-bold hover-trigger">SORT BY</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-8 pb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+            
+            <div class="product-card group cursor-pointer hover-trigger">
+                <div class="relative aspect-[3/4] bg-[#E8E8E3] overflow-hidden mb-6 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000" 
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
+                    <span class="absolute top-4 left-4 bg-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">Limited Edition</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold brand-font">STRUCTURAL BLAZER</h3>
+                        <p class="text-gray-500 text-sm">Concrete Grey / Wool Blend</p>
+                    </div>
+                    <p class="text-xl font-medium font-bold">$340</p>
+                </div>
+            </div>
+
+            <div class="product-card group cursor-pointer hover-trigger">
+                <div class="relative aspect-[3/4] bg-[#E8E8E3] overflow-hidden mb-6 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000" 
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
+                    <span class="absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">New</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold brand-font">ETHEREAL TRENCH</h3>
+                        <p class="text-gray-500 text-sm">Obsidian / Sustainable Silk</p>
+                    </div>
+                    <p class="text-xl font-medium font-bold">$520</p>
+                </div>
+            </div>
+
+            <div class="product-card group cursor-pointer hover-trigger">
+                <div class="relative aspect-[3/4] bg-[#E8E8E3] overflow-hidden mb-6 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1554412930-c74f639c916a?q=80&w=1000" 
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold brand-font">KINETIC TROUSER</h3>
+                        <p class="text-gray-500 text-sm">Matte Black / Tech-Linen</p>
+                    </div>
+                    <p class="text-xl font-medium font-bold">$210</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Init Lucide
+        lucide.createIcons();
+
+        // Sync Custom Cursor with aura.html logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: "power2.out"
+            });
+        });
+
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Entrance Animation for Cards
+        gsap.from(".product-card", {
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: "power4.out",
+            delay: 0.5
+        });
+    </script>
+</body>
+</html>

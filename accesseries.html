@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ARCHIVE | AURA ACCESSORIES</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #F5F5F0;
+            color: #1a1a1a;
+            cursor: none;
+        }
+        h1, h2, h3, .brand-font { font-family: 'Syne', sans-serif; }
+
+        /* Custom AURA Cursor */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #1a1a1a;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            background-color: white;
+            transition: width 0.3s, height 0.3s;
+        }
+        #cursor.hovered { width: 80px; height: 80px; }
+
+        /* Grain Texture Overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* 3D High-Visibility Card */
+        .acc-wrapper {
+            perspective: 1500px;
+        }
+
+        .accessory-card {
+            background: #ffffff;
+            border-radius: 2.5rem;
+            padding: 2rem;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .accessory-card:hover {
+            box-shadow: 0 50px 100px rgba(0,0,0,0.1);
+        }
+
+        .img-viewport {
+            position: relative;
+            width: 100%;
+            background: #fdfdfb;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 350px;
+        }
+
+        /* Noticeable Detail Image */
+        .accessory-card img {
+            width: 85%;
+            height: 85%;
+            object-fit: contain;
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+        }
+
+        .accessory-card:hover img {
+            transform: translateZ(50px) scale(1.15);
+        }
+
+        /* Noticeable Price/Status Badge */
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .detail-tag {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="cursor"></div>
+    <div class="grain"></div>
+
+    <nav class="p-10 flex justify-between items-center relative z-50">
+        <a href="aura.html" class="text-3xl font-black brand-font hover-trigger tracking-tighter">AURA.</a>
+        <div class="hidden md:flex gap-12 text-[11px] font-black tracking-widest uppercase">
+            <a href="#" class="hover-trigger opacity-40 hover:opacity-100 transition">Arrivals</a>
+            <a href="#" class="hover-trigger opacity-40 hover:opacity-100 transition">Archives</a>
+            <a href="#" class="border-b-2 border-black pb-1">Essentials</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <i data-lucide="search" class="w-5 h-5 cursor-pointer hover-trigger"></i>
+            <i data-lucide="shopping-bag" class="w-5 h-5 cursor-pointer hover-trigger"></i>
+        </div>
+    </nav>
+
+    <header class="pt-10 pb-20 px-10">
+        <div class="max-w-7xl mx-auto border-b border-black/5 pb-10">
+            <h1 class="text-7xl md:text-[11rem] font-black tracking-tighter uppercase leading-[0.8] mb-10">THE<br>EXTRAS.</h1>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+                <p class="text-gray-400 max-w-sm font-medium italic">High-visibility archival pieces. Every detail is engineered for the modern minimalist.</p>
+                <div class="flex gap-4">
+                    <button class="px-8 py-3 bg-white border border-black/10 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition hover-trigger">Lth / Skin</button>
+                    <button class="px-8 py-3 bg-white border border-black/10 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white transition hover-trigger">Mtl / Glass</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-10 pb-40">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            
+            <div class="acc-wrapper">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">Titanium Series</span>
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000" alt="Watch">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Onyx Chrono</h3>
+                            <p class="text-sm text-gray-400 font-bold">42mm / Sapphire Crystal</p>
+                        </div>
+                        <span class="detail-tag">$580</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-wrapper lg:mt-20">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">Signature Scent</span>
+                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000" alt="Fragrance">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Aura Eau</h3>
+                            <p class="text-sm text-gray-400 font-bold">100ml / Sandalwood & Ash</p>
+                        </div>
+                        <span class="detail-tag">$145</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-wrapper">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">Handcrafted</span>
+                        <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000" alt="Sunglasses">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Void Optics</h3>
+                            <p class="text-sm text-gray-400 font-bold">Acetate / Polarized Black</p>
+                        </div>
+                        <span class="detail-tag">$210</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-wrapper">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">Full Grain</span>
+                        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1000" alt="Bag">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Studio Tote</h3>
+                            <p class="text-sm text-gray-400 font-bold">Hand-stitched Leather</p>
+                        </div>
+                        <span class="detail-tag">$395</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-wrapper lg:mt-[-5rem]">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">High Demand</span>
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000" alt="Shoes">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Veloce Runner</h3>
+                            <p class="text-sm text-gray-400 font-bold">Performance Mesh / Onyx</p>
+                        </div>
+                        <span class="detail-tag">$280</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-wrapper">
+                <div class="accessory-card group hover-trigger">
+                    <div class="img-viewport mb-8">
+                        <span class="status-badge">925 Sterling</span>
+                        <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?q=80&w=1000" alt="Ring">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black brand-font uppercase tracking-tighter">Crest Ring</h3>
+                            <p class="text-sm text-gray-400 font-bold">Solid Silver / Engraved</p>
+                        </div>
+                        <span class="detail-tag">$190</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+        });
+
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // 3D Tilt Effect for each card
+        const cards = document.querySelectorAll('.accessory-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                const dx = x - xc;
+                const dy = y - yc;
+
+                gsap.to(card, {
+                    rotationY: dx / 15,
+                    rotationX: -dy / 15,
+                    ease: "power2.out",
+                    duration: 0.5
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { rotationY: 0, rotationX: 0, ease: "power2.out", duration: 0.5 });
+            });
+        });
+
+        // Reveal Animation
+        gsap.from(".acc-wrapper", {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            stagger: 0.2,
+            ease: "expo.out"
+        });
+    </script>
+</body>
+</html>
